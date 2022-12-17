@@ -52,7 +52,7 @@ async def main():
         await conn.commit()
     buffer_data = []
     end = requests.get('https://swapi.dev/api/people/').json()['count']
-    async for character in get_character(1, 10):
+    async for character in get_character(1, int(end)+2):
         print(type(character), character)
         buffer_data.append(character)
         if len(buffer_data) >= 10:
