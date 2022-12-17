@@ -26,10 +26,11 @@ async def get_character(start, end):
 
 async def paste_db(all_datas):
     async with Session() as session:
+
         char_orm = [Character(
             birth_year=character['birth_year'],
             eye_color=character['birth_year'],
-            films=character['films'],
+            films=[requests.get(film).json()['title'] for film in character['films']],
             gender=character['gender'],
             hair_color=character['hair_color'],
             height=character['height'],
@@ -37,9 +38,9 @@ async def paste_db(all_datas):
             mass=character['mass'],
             name=character['name'],
             skin_color=character['skin_color'],
-            species=character['species'],
-            starships=character['starships'],
-            vehicles=character['vehicles']
+            species=[requests.get(specie).json()['name'] for specie in character['species']],
+            starships=[requests.get(starship).json()['name'] for starship in character['starships']],
+            vehicles=[requests.get(vehicle).json()['name'] for vehicle in character['vehicles']],
         ) for character in all_datas if 'detail' not in character]
         session.add_all(char_orm)
         await session.commit()
@@ -51,7 +52,7 @@ async def main():
         await conn.commit()
     buffer_data = []
     end = requests.get('https://swapi.dev/api/people/').json()['count']
-    async for character in get_character(1, int(end)+2):
+    async for character in get_character(1, 10):
         print(type(character), character)
         buffer_data.append(character)
         if len(buffer_data) >= 10:
