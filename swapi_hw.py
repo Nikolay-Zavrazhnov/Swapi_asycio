@@ -1,5 +1,4 @@
 import asyncio
-
 import requests
 from aiohttp import ClientSession
 from db import engine, Base, Session, Character
